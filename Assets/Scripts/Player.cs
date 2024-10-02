@@ -31,14 +31,14 @@ public class Player : MonoBehaviour
     private void Movement_performed(InputAction.CallbackContext context)
     {
         Vector2 inputVector = context.ReadValue<Vector2>();
-
+        Debug.Log("InputVector" + inputVector);
         if (Mathf.Abs(inputVector.x) > Mathf.Abs(inputVector.y))
         {
             _currentDirection = new Vector3(inputVector.x, 0, 0).normalized;
         }
         else
         {
-            _currentDirection = new Vector3(0, 0, inputVector.y).normalized;
+            _currentDirection = new Vector3(0, inputVector.y, 0).normalized;
         }
 
         _timeElapsed = 0f; // Réinitialiser le temps lorsque le mouvement est déclenché
