@@ -6,10 +6,11 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    private Rigidbody _playerRigidbody;
-
+    public Animator animator;
     [SerializeField] private float _baseForce = 200f; // Vitesse initiale
     [SerializeField] private float _growthRate = 0.5f; // Taux de croissance exponentiel
+
+    private Rigidbody _playerRigidbody;
     private Vector3 _currentDirection = Vector3.zero;
     private float _currentSpeed = 0f;
     private float _timeElapsed = 0f; // Temps écoulé
@@ -21,6 +22,10 @@ public class Player : MonoBehaviour
         PlayerInputActions playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
         playerInputActions.Player.Movement.performed += Movement_performed;
+    }
+
+    private void Start()
+    {
     }
 
     private void Movement_performed(InputAction.CallbackContext context)
@@ -48,6 +53,8 @@ public class Player : MonoBehaviour
 
         if (_currentDirection != Vector3.zero && currentSpeedMagnitude > 0.1f)
         {
+            animator.Play("Angry");
+
             _timeElapsed += Time.fixedDeltaTime;
             _currentSpeed = _baseForce * Mathf.Exp(_growthRate * _timeElapsed);
 
@@ -55,7 +62,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            //_playerRigidbody.velocity = Vector3.zero;
+            animator.Play("Happy");
             _timeElapsed = 0f;
         }
     }
@@ -65,5 +72,11 @@ public class Player : MonoBehaviour
         _currentDirection = Vector3.zero;
         _currentSpeed = 0f;
         _timeElapsed = 0f;
+    }
+
+    public void IncreasedStats()
+    {
+        _growthRate += 0.5f;
+        _baseForce += 200f;
     }
 }

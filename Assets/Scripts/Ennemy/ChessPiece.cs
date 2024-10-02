@@ -1,3 +1,5 @@
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -5,13 +7,21 @@ public abstract class ChessPiece : MonoBehaviour
 {
     protected Rigidbody _rigidbody;
     public ChessPieceData chessPieceData;
+    public GameObject floatingTextPrefab;
+    public GameObject particlePrefab;
+    public bool isInvincible = false; // Pour le debug
     //public Slider healthSlider;
 
     private float currentHealth;
+    private GameObject parent;
+
+    public static event Action OnEnemyDied;
+    public static event Action<float> OnCollisionWithPlayer;
     protected virtual void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         currentHealth = chessPieceData.maxHealth;
+        parent = GameObject.Find("FloatingTextParent");
     }
 
     public abstract void Move();
@@ -23,14 +33,19 @@ public abstract class ChessPiece : MonoBehaviour
             Rigidbody playerRigidbody = collision.gameObject.GetComponent<Rigidbody>();
             if (playerRigidbody != null)
             {
-                float impactVelocity = collision.relativeVelocity.magnitude;
-                float damage = CalculateDamage(impactVelocity);
-                TakeDamage(damage);
-
+                //float impactVelocity = collision.relativeVelocity.magnitude;
                 Vector3 impactForce = collision.relativeVelocity * playerRigidbody.mass;
-                impactForce = Vector3.ClampMagnitude(impactForce, 1000f);
+                
+                float impactForceMagnitude = impactForce.magnitude;
+                OnCollisionWithPlayer?.Invoke(impactForceMagnitude);
 
-                playerRigidbody.AddForce(-impactForce.normalized * impactForce.magnitude * 0.5f, ForceMode.Impulse);
+                float damage = CalculateDamage(impactForceMagnitude);
+                TakeDamage(damage);
+                var colisionPosition = collision.GetContact(0).point;
+                ShowFloatingText(damage, colisionPosition);
+
+                var impactForceClamped = Vector3.ClampMagnitude(impactForce, 1000f);
+                playerRigidbody.AddForce(-impactForceClamped.normalized * impactForceClamped.magnitude * 0.5f, ForceMode.Impulse);
 
                 playerRigidbody.velocity = Vector3.zero;
                 Player playerScript = collision.gameObject.GetComponent<Player>();
@@ -43,9 +58,10 @@ public abstract class ChessPiece : MonoBehaviour
     }
     protected float CalculateDamage(float impactVelocity)
     {
-        var velocityThreshold = 40f;
+        impactVelocity /= 10f;
+        var velocityThreshold = 100f; // Valeur minimum de vitesse à l'impact pour infliger des dégats
         if (impactVelocity > velocityThreshold)
-            return impactVelocity / 1.5f; // Valeur à redefinir
+            return impactVelocity; // Valeur à redefinir
         else
             return 0; // Pas assez de vitesse à l'imapct
     }
@@ -55,14 +71,38 @@ public abstract class ChessPiece : MonoBehaviour
         currentHealth -= damageAmount;
         Debug.Log(gameObject.name + " a reçu " + damageAmount + " de dégâts. Vie restante : " + currentHealth);
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && !isInvincible)
         {
             Die();
+        }
+    }
+    void ShowFloatingText(float damageAmount, Vector3 position)
+    {
+        if (floatingTextPrefab != null)
+        {
+            var go = Instantiate(floatingTextPrefab, position, floatingTextPrefab.transform.rotation, parent.transform);
+            var damageRounded = Mathf.RoundToInt(damageAmount);
+            go.GetComponent<TextMeshPro>().text = damageRounded.ToString();
         }
     }
     protected virtual void Die()
     {
         Debug.Log(gameObject.name + " est mort !");
+        SpawnParticles();
+        OnEnemyDied?.Invoke();
         Destroy(gameObject);
+    }
+
+    void SpawnParticles()
+    {
+        GameObject particleSystemInstance = Instantiate(particlePrefab, transform.position, Quaternion.identity);
+
+        ParticleSystem ps = particleSystemInstance.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            ps.Play();
+        }
+
+        Destroy(particleSystemInstance, ps.main.duration);
     }
 }
