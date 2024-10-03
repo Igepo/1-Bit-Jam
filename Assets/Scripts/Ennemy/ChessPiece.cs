@@ -44,14 +44,14 @@ public abstract class ChessPiece : MonoBehaviour
                 var colisionPosition = collision.GetContact(0).point;
                 ShowFloatingText(damage, colisionPosition);
 
-                var impactForceClamped = Vector3.ClampMagnitude(impactForce, 1000f);
+                var impactForceClamped = Vector3.ClampMagnitude(impactForce, 10000f);
                 playerRigidbody.AddForce(-impactForceClamped.normalized * impactForceClamped.magnitude * 0.5f, ForceMode.Impulse);
 
-                playerRigidbody.velocity = Vector3.zero;
+                //playerRigidbody.velocity = Vector3.zero;
                 Player playerScript = collision.gameObject.GetComponent<Player>();
                 if (playerScript != null)
                 {
-                    playerScript.StopPlayer();
+                    //playerScript.StopPlayer();
                 }
             }
         }
@@ -69,7 +69,7 @@ public abstract class ChessPiece : MonoBehaviour
     public virtual void TakeDamage(float damageAmount)
     {
         currentHealth -= damageAmount;
-        Debug.Log(gameObject.name + " a reçu " + damageAmount + " de dégâts. Vie restante : " + currentHealth);
+        //  Debug.Log(gameObject.name + " a reçu " + damageAmount + " de dégâts. Vie restante : " + currentHealth);
 
         if (currentHealth <= 0 && !isInvincible)
         {
@@ -96,7 +96,6 @@ public abstract class ChessPiece : MonoBehaviour
     void SpawnParticles()
     {
         GameObject particleSystemInstance = Instantiate(particlePrefab, transform.position, Quaternion.identity);
-
         ParticleSystem ps = particleSystemInstance.GetComponent<ParticleSystem>();
         if (ps != null)
         {

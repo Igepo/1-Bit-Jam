@@ -9,7 +9,6 @@ public class ChessPieceData : ScriptableObject
     public float maxHealth;
     public Vector3[] validMoves;
 
-    // Méthode pour afficher des informations sur la pièce
     public string GetInfo()
     {
         return $"{pieceName}: Speed = {moveSpeed}, Change Direction Time = {changeDirectionTime}";
