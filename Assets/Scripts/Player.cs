@@ -48,7 +48,6 @@ public class Player : MonoBehaviour
         _currentSpeed = _baseForce;
         _playerRigidbody.velocity = Vector3.zero;
         _playerRigidbody.AddForce(_currentDirection * _currentSpeed, ForceMode.Impulse);
-        Debug.Log(_currentDirection);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -69,8 +68,6 @@ public class Player : MonoBehaviour
             _currentSpeed = _baseForce + (_growthRate * _timeElapsed);
             _currentSpeed = Mathf.Clamp(_currentSpeed, 0f, float.MaxValue);
             _playerRigidbody.AddForce(_currentDirection * _currentSpeed * Time.fixedDeltaTime, ForceMode.Force);
-            Debug.Log(_currentDirection);
-
         }
         else
         {

@@ -1,10 +1,9 @@
 fileFormatVersion: 2
-guid: 2e2e59a58f799cb45af9829aad54ee73
+guid: 562c683ec11784f45befcbc33ecab559
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - chessPieceData: {fileID: 11400000, guid: adc29b805be304246a32b6d942d660f5, type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

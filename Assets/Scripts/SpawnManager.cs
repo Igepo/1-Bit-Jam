@@ -5,7 +5,8 @@ public class SpawnManager : MonoBehaviour
     public GameObject unitPrefab;
     public BoxCollider[] spawnAreas;
     public int numberOfUnitsToSpawn = 5;
-    public float spawnHeight = 0f; // Hauteur fixe pour l'axe Z
+    public float spawnHeight = 0f;
+    public Transform parent;
 
     void Start()
     {
@@ -25,6 +26,6 @@ public class SpawnManager : MonoBehaviour
             Random.Range(selectedArea.bounds.min.z, selectedArea.bounds.max.z)
         );
 
-        Instantiate(unitPrefab, randomPosition, Quaternion.identity);
+        var toto = Instantiate(unitPrefab, randomPosition, Quaternion.identity, parent);
     }
 }

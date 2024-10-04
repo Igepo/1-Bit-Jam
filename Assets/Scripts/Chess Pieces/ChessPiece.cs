@@ -27,6 +27,8 @@ public abstract class ChessPiece : MonoBehaviour
         "Light as a feather.",
         "Barely felt that!"
     };
+    private float lastFloatingTextTime = 0f;
+    private const float floatingTextCooldown = 0.5f;
 
     public static event Action OnEnemyDied;
     public static event Action<float> OnCollisionWithPlayer;
@@ -55,7 +57,12 @@ public abstract class ChessPiece : MonoBehaviour
                 float damage = CalculateDamage(impactForceMagnitude);
                 TakeDamage(damage);
                 var colisionPosition = collision.GetContact(0).point;
-                ShowFloatingText(damage, colisionPosition);
+
+                if (Time.time - lastFloatingTextTime > floatingTextCooldown)
+                {
+                    ShowFloatingText(damage, colisionPosition);
+                    lastFloatingTextTime = Time.time;
+                }
 
                 var impactForceClamped = Vector3.ClampMagnitude(impactForce, 10000f);
                 playerRigidbody.AddForce(-impactForceClamped.normalized * impactForceClamped.magnitude * 0.5f, ForceMode.Impulse);
@@ -104,6 +111,7 @@ public abstract class ChessPiece : MonoBehaviour
             }
             else
             {
+                go.GetComponent<TextMeshPro>().fontSize = 40f;
                 go.GetComponent<TextMeshPro>().text = damageRounded.ToString();
             }
         }

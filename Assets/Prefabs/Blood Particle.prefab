@@ -980,8 +980,8 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 3
-        scalar: 100
-        minScalar: 100
+        scalar: 50
+        minScalar: 25
         maxCurve:
           serializedVersion: 2
           m_Curve:
