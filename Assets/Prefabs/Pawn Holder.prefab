@@ -100,13 +100,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1266340203782922765}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -0.046, y: 0, z: 0.385}
   m_LocalScale: {x: 3.709447, y: 3.709447, z: 3.709447}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7034435665593934422}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!212 &8966134129422030966
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -273,7 +273,7 @@ Transform:
   m_GameObject: {fileID: 4804916022362389513}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -19.721249, y: 12.53, z: -36.601154}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -292,6 +292,8 @@ GameObject:
   - component: {fileID: 4883867115363140063}
   - component: {fileID: 7369370481901785060}
   - component: {fileID: 6118602184432072575}
+  - component: {fileID: 6402636014282011896}
+  - component: {fileID: 1197352939889783564}
   m_Layer: 0
   m_Name: Pawn
   m_TagString: Ennemy
@@ -308,7 +310,7 @@ Transform:
   m_GameObject: {fileID: 5506099010134766608}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.13999939, y: 1.3331623, z: 0}
+  m_LocalPosition: {x: -0.13999939, y: 1.43, z: 0}
   m_LocalScale: {x: 2.7589, y: 2.8278723, z: 2.7589}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -335,8 +337,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.8346766, y: 1.9822474, z: 1.8040352}
-  m_Center: {x: 0.018006397, y: -0.42973283, z: 0.5376479}
+  m_Size: {x: 1.5695032, y: 1.866314, z: 1.8296435}
+  m_Center: {x: 0.013442749, y: -0.37176615, z: 0.05504169}
 --- !u!54 &7369370481901785060
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -362,7 +364,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 122
+  m_Constraints: 116
   m_CollisionDetection: 2
 --- !u!114 &6118602184432072575
 MonoBehaviour:
@@ -380,6 +382,40 @@ MonoBehaviour:
   floatingTextPrefab: {fileID: 3968453392572034015, guid: 77a72112d943aff4b91e212f39a838af, type: 3}
   particlePrefab: {fileID: 2665138312335137426, guid: 85b531ac7361bb34caad48be252c5f11, type: 3}
   isInvincible: 0
+--- !u!195 &6402636014282011896
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5506099010134766608}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 1.02
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.91
+  m_BaseOffset: 1.31
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &1197352939889783564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5506099010134766608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5af48d3cec9dffb4d9ae24816af1cb82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8425565115786285366
 GameObject:
   m_ObjectHideFlags: 0

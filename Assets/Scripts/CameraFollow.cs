@@ -27,17 +27,17 @@ public class CameraFollow : MonoBehaviour
                 desiredPosition.x = terrainBounds.max.x - padding;
             }
 
-            if (desiredPosition.y < terrainBounds.min.y + padding)
+            if (desiredPosition.z < terrainBounds.min.z + padding)
             {
-                desiredPosition.y = terrainBounds.min.y + padding;
+                desiredPosition.z = terrainBounds.min.z + padding;
             }
-            else if (desiredPosition.y > terrainBounds.max.y - padding)
+            else if (desiredPosition.z > terrainBounds.max.z - padding)
             {
-                desiredPosition.y = terrainBounds.max.y - padding;
+                desiredPosition.z = terrainBounds.max.z - padding;
             }
 
             Vector3 smoothedPosition = Vector3.Lerp(cameraHolder.transform.position, desiredPosition, smoothSpeed);
-            cameraHolder.transform.position = new Vector3(smoothedPosition.x, smoothedPosition.y, cameraHolder.transform.position.z);
+            cameraHolder.transform.position = new Vector3(smoothedPosition.x, cameraHolder.transform.position.y, smoothedPosition.z);
         }
     }
 }

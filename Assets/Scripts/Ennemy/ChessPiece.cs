@@ -15,6 +15,19 @@ public abstract class ChessPiece : MonoBehaviour
     private float currentHealth;
     private GameObject parent;
 
+    private string[] noDamageMessages = {
+        "That tickles!",
+        "No pain!",
+        "Barely a scratch.",
+        "Just a nudge...",
+        "Minor impact.",
+        "Not strong enough!",
+        "Try harder!",
+        "I've seen worse.",
+        "Light as a feather.",
+        "Barely felt that!"
+    };
+
     public static event Action OnEnemyDied;
     public static event Action<float> OnCollisionWithPlayer;
     protected virtual void Awake()
@@ -61,7 +74,7 @@ public abstract class ChessPiece : MonoBehaviour
         impactVelocity /= 10f;
         var velocityThreshold = 100f; // Valeur minimum de vitesse à l'impact pour infliger des dégats
         if (impactVelocity > velocityThreshold)
-            return impactVelocity; // Valeur à redefinir
+            return impactVelocity;
         else
             return 0; // Pas assez de vitesse à l'imapct
     }
@@ -76,13 +89,23 @@ public abstract class ChessPiece : MonoBehaviour
             Die();
         }
     }
+
     void ShowFloatingText(float damageAmount, Vector3 position)
     {
         if (floatingTextPrefab != null)
         {
             var go = Instantiate(floatingTextPrefab, position, floatingTextPrefab.transform.rotation, parent.transform);
             var damageRounded = Mathf.RoundToInt(damageAmount);
-            go.GetComponent<TextMeshPro>().text = damageRounded.ToString();
+
+            if (damageRounded == 0)
+            {
+                string randomMessage = noDamageMessages[UnityEngine.Random.Range(0, noDamageMessages.Length)];
+                go.GetComponent<TextMeshPro>().text = randomMessage;
+            }
+            else
+            {
+                go.GetComponent<TextMeshPro>().text = damageRounded.ToString();
+            }
         }
     }
     protected virtual void Die()

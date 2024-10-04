@@ -21,7 +21,7 @@ public class Pawn : ChessPiece
         _moveTimer -= Time.deltaTime;
         if (_moveTimer <= 0)
         {
-            Move();
+            //Move();
             _moveTimer = chessPieceData.changeDirectionTime;
         }
     }

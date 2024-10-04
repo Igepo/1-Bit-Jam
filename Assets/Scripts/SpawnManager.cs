@@ -21,8 +21,8 @@ public class SpawnManager : MonoBehaviour
 
         Vector3 randomPosition = new Vector3(
             Random.Range(selectedArea.bounds.min.x, selectedArea.bounds.max.x),
-            Random.Range(selectedArea.bounds.min.y, selectedArea.bounds.max.y), // Y pour la position verticale
-            spawnHeight
+            spawnHeight,
+            Random.Range(selectedArea.bounds.min.z, selectedArea.bounds.max.z)
         );
 
         Instantiate(unitPrefab, randomPosition, Quaternion.identity);

@@ -57,10 +57,16 @@ public class GameManager : MonoBehaviour
     private void PlayCollisionSound(float impactSpeed)
     {
         float normalizedImpactSpeed = Mathf.Clamp(impactSpeed, 0f, 5000f) / 5000f;
-        audioSource.pitch = Mathf.Lerp(0.5f, 1.0f, normalizedImpactSpeed);
-        audioSource.volume = Mathf.SmoothStep(0f, 0.8f, normalizedImpactSpeed);
 
-        audioSource.PlayOneShot(collisionSound);
+        audioSource.volume = 0.1f;
+        audioSource.pitch = Mathf.Lerp(0.5f, 1.0f, normalizedImpactSpeed);
+        audioSource.volume = Mathf.SmoothStep(0f, 0.2f, normalizedImpactSpeed);
+
+        if (!audioSource.isPlaying)
+        {
+            audioSource.clip = collisionSound;
+            audioSource.Play();
+        }
     }
 
     void Start()

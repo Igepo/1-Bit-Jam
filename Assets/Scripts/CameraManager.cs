@@ -35,7 +35,7 @@ public class CameraManager : MonoBehaviour
     {
         Vector3 currentPosition = cameraHolder.transform.position;
 
-        float targetZ = currentPosition.z * multiplier;
+        float targetY = currentPosition.y * multiplier;
 
         float elapsedTime = 0f;
 
@@ -43,13 +43,13 @@ public class CameraManager : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
 
-            float newZ = Mathf.Lerp(currentPosition.z, targetZ, elapsedTime / duration);
+            float newY = Mathf.Lerp(currentPosition.y, targetY, elapsedTime / duration);
 
-            cameraHolder.transform.position = new Vector3(currentPosition.x, currentPosition.y, newZ);
+            cameraHolder.transform.position = new Vector3(currentPosition.x, newY, currentPosition.z);
 
             yield return null;
         }
 
-        cameraHolder.transform.position = new Vector3(currentPosition.x, currentPosition.y, targetZ);
+        cameraHolder.transform.position = new Vector3(currentPosition.x, targetY, currentPosition.z);
     }
 }
