@@ -7,15 +7,18 @@ public class King : ChessPiece
     private float terrainLength;
     private GameObject backgroundObject;
     public Slider healthSlider;
+    private GameOverManager gameOverManager;
 
+    [SerializeField] private float forceToApply;
     private void Start()
     {
         healthSlider.value = 1;
+        gameOverManager = FindObjectOfType<GameOverManager>();
     }
 
     void Update()
     {
-        
+
     }
 
     protected override void OnCollisionEnter(Collision collision)
@@ -33,7 +36,8 @@ public class King : ChessPiece
                 Vector3 impactForce = collision.relativeVelocity * playerRigidbody.mass;
                 var impactForceClamped = Vector3.ClampMagnitude(impactForce, 10000f);
                 Debug.Log("Player Force : " + -impactForceClamped.normalized * impactForceClamped.magnitude * 0.5f);
-                playerRigidbody.AddForce(-impactForceClamped.normalized * impactForceClamped.magnitude * 0.5f, ForceMode.Impulse);
+                forceToApply = impactForceClamped.magnitude * 0.5f;
+                playerRigidbody.AddForce(-impactForceClamped.normalized * forceToApply, ForceMode.Impulse);
             }
 
             return;
@@ -59,7 +63,7 @@ public class King : ChessPiece
     protected override void Die()
     {
         Debug.Log("Le roi est mort ! ");
-        healthSlider.gameObject.SetActive(false);
+        gameOverManager.DisplayGameOverScreen();
         //SpawnParticles();
         //OnEnemyDied?.Invoke();
         //Destroy(gameObject);

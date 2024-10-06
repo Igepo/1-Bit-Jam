@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UI;
 using TMPro;
+
 public class NavigationScriptKing : MonoBehaviour
 {
     public Transform[] waypoints;
-    //public LineRenderer lineRenderer;
     public TextMeshProUGUI progressText;
     private NavMeshAgent agent;
     private int waypointIndex = 0;
@@ -93,6 +92,11 @@ public class NavigationScriptKing : MonoBehaviour
         int percentageCompletedInt = Mathf.RoundToInt(percentageCompleted);
 
         progressText.text = percentageCompletedInt + "%";
+    }
+    public int GetPercentageCompleted()
+    {
+        float percentageCompleted = (traveledDistance / totalPathLength) * 100f;
+        return Mathf.RoundToInt(percentageCompleted);
     }
 
     void UpdateDestination()

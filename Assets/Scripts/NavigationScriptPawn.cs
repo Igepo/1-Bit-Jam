@@ -13,7 +13,6 @@ public class NavigationScriptPawn : MonoBehaviour
     private bool isKnockedBack = false;
     private float knockbackDuration = 1f;
 
-    [SerializeField] float damageDealt = 10; // Dommage infligé par les pions
     private void Awake()
     {
         targetGameObject = GameObject.FindWithTag("Ally");
@@ -30,8 +29,6 @@ public class NavigationScriptPawn : MonoBehaviour
         agent.updateRotation = false;
         agent.updatePosition = false;
     }
-
-    bool isWaiting = false;
 
     void Update()
     {

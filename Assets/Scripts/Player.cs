@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     private float _currentSpeed = 0f;
     private float _timeElapsed = 0f;
     private TrailRenderer _trailRenderer;
+    private PlayerInputActions playerInputActions;
 
     public static event Action<Collision> OnPlayerCollision;
 
@@ -23,9 +24,18 @@ public class Player : MonoBehaviour
         _playerRigidbody = GetComponent<Rigidbody>();
         _trailRenderer = GetComponent<TrailRenderer>();
 
-        PlayerInputActions playerInputActions = new PlayerInputActions();
+        playerInputActions = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
         playerInputActions.Player.Enable();
         playerInputActions.Player.Movement.performed += Movement_performed;
+    }
+    private void OnDisable()
+    {
+        playerInputActions.Player.Disable();
+        playerInputActions.Player.Movement.performed -= Movement_performed;
     }
 
     private void Start()

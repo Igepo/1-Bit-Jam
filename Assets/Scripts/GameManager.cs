@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     void OnEnemyDied()
     {
-        player.IncreasedStats();
+        //player.IncreasedStats();
     }
 
     private void OnPlayerCollision(Collision collision)
