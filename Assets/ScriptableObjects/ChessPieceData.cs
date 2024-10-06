@@ -8,6 +8,7 @@ public class ChessPieceData : ScriptableObject
     public float changeDirectionTime;
     public float maxHealth;
     public Vector3[] validMoves;
+    public float DamageReceive;
 
     public string GetInfo()
     {

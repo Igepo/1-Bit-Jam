@@ -416,7 +416,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 562c683ec11784f45befcbc33ecab559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypoints: []
+  moveInterval: 1
+  moveDistance: 10
+  moveDuration: 0.5
+  jumpHeight: 5
 --- !u!1 &8425565115786285366
 GameObject:
   m_ObjectHideFlags: 0

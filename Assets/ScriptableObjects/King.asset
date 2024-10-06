@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4792cb271d5e18844a311eb5c021f631, type: 3}
   m_Name: King
   m_EditorClassIdentifier: 
-  pieceName: 
+  pieceName: King
   moveSpeed: 0
   changeDirectionTime: 0
+  maxHealth: 100
   validMoves: []
+  DamageReceive: 10

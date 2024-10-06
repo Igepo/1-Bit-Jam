@@ -1,7 +1,6 @@
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public abstract class ChessPiece : MonoBehaviour
 {
@@ -10,9 +9,10 @@ public abstract class ChessPiece : MonoBehaviour
     public GameObject floatingTextPrefab;
     public GameObject particlePrefab;
     public bool isInvincible = false; // Pour le debug
-    //public Slider healthSlider;
 
-    private float currentHealth;
+    protected float currentHealth;
+    protected float pieceDamageReceive;
+
     private GameObject parent;
 
     private string[] noDamageMessages = {
@@ -36,6 +36,8 @@ public abstract class ChessPiece : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
         currentHealth = chessPieceData.maxHealth;
+        pieceDamageReceive = chessPieceData.DamageReceive;
+
         parent = GameObject.Find("FloatingTextParent");
     }
 
