@@ -1,13 +1,19 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using TMPro;
+using System;
 
 public class NavigationScriptKing : MonoBehaviour
 {
     public Transform[] waypoints;
     public TextMeshProUGUI progressText;
+
+    public AudioClip[] moveSounds;
+    public AudioSource moveAudioSource;
+
+    public static event Action OnVictory;
+
     private NavMeshAgent agent;
     private int waypointIndex = 0;
     private Vector3 target;
@@ -16,6 +22,9 @@ public class NavigationScriptKing : MonoBehaviour
     private float totalPathLength;
     private Vector3 startPosition;
     private float traveledDistance = 0f;
+
+    public float pauseDuration = 1f;
+    public float moveDuration = 1f;
 
     private void Awake()
     {
@@ -26,7 +35,6 @@ public class NavigationScriptKing : MonoBehaviour
     {
         agent.avoidancePriority = 0;
         agent.updateRotation = false;
-        agent.updatePosition = false;
 
         startPosition = transform.position;
         totalPathLength = GetTotalPathLength(waypoints);
@@ -37,7 +45,6 @@ public class NavigationScriptKing : MonoBehaviour
     private float GetTotalPathLength(Transform[] waypoints)
     {
         float totalLength = 0f;
-
         totalLength += Vector3.Distance(startPosition, waypoints[0].position);
 
         for (int i = 1; i < waypoints.Length; i++)
@@ -78,14 +85,6 @@ public class NavigationScriptKing : MonoBehaviour
         if (hasReachedLastWaypoint)
             return;
 
-        if (Vector3.Distance(transform.position, target) < 5f)
-        {
-            IterateWaypointIndex();
-            UpdateDestination();
-        }
-
-        transform.position = agent.nextPosition;
-
         traveledDistance = GetDistanceTraveled(transform.position, startPosition, waypoints, waypointIndex);
 
         float percentageCompleted = (traveledDistance / totalPathLength) * 100f;
@@ -93,6 +92,7 @@ public class NavigationScriptKing : MonoBehaviour
 
         progressText.text = percentageCompletedInt + "%";
     }
+
     public int GetPercentageCompleted()
     {
         float percentageCompleted = (traveledDistance / totalPathLength) * 100f;
@@ -105,7 +105,25 @@ public class NavigationScriptKing : MonoBehaviour
         {
             target = waypoints[waypointIndex].position;
             agent.SetDestination(target);
+            StartCoroutine(MoveWithPauses());
         }
+    }
+
+    IEnumerator MoveWithPauses()
+    {
+        while (Vector3.Distance(transform.position, target) > 0.5f)
+        {
+            agent.isStopped = false;
+
+            yield return new WaitForSeconds(moveDuration);
+
+            PlayRandomMoveSound();
+
+            agent.isStopped = true;
+            yield return new WaitForSeconds(pauseDuration);
+        }
+
+        IterateWaypointIndex();
     }
 
     void IterateWaypointIndex()
@@ -115,6 +133,22 @@ public class NavigationScriptKing : MonoBehaviour
         {
             hasReachedLastWaypoint = true;
             agent.isStopped = true;
+
+            OnVictory?.Invoke();
+        }
+        else
+        {
+            UpdateDestination();
+        }
+    }
+
+    void PlayRandomMoveSound()
+    {
+        if (moveSounds.Length > 0)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, moveSounds.Length);
+            moveAudioSource.clip = moveSounds[randomIndex];
+            moveAudioSource.Play();
         }
     }
 }

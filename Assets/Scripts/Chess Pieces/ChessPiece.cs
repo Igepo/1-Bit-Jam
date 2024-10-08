@@ -80,7 +80,7 @@ public abstract class ChessPiece : MonoBehaviour
     }
     protected float CalculateDamage(float impactVelocity)
     {
-        impactVelocity /= 10f;
+        impactVelocity /= 7f;
         var velocityThreshold = 100f; // Valeur minimum de vitesse à l'impact pour infliger des dégats
         if (impactVelocity > velocityThreshold)
             return impactVelocity;

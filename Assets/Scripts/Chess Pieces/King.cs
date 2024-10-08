@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,13 +8,17 @@ public class King : ChessPiece
     private float terrainLength;
     private GameObject backgroundObject;
     public Slider healthSlider;
-    private GameOverManager gameOverManager;
+    private LevelManager gameOverManager;
 
+    public AudioClip deathSound;
+    public AudioSource deathAudioSource;
     [SerializeField] private float forceToApply;
+
+    public static event Action OnGamelost;
     private void Start()
     {
         healthSlider.value = 1;
-        gameOverManager = FindObjectOfType<GameOverManager>();
+        gameOverManager = FindObjectOfType<LevelManager>();
     }
 
     void Update()
@@ -52,7 +57,7 @@ public class King : ChessPiece
 
         currentHealth -= kingDamageReceive;
         healthSlider.value -= 1 / kingDamageReceive;
-        Debug.Log(gameObject.name + " a reçu " + kingDamageReceive + " de dégâts. Vie restante : " + currentHealth);
+        //Debug.Log(gameObject.name + " a reçu " + kingDamageReceive + " de dégâts. Vie restante : " + currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -64,6 +69,10 @@ public class King : ChessPiece
     {
         Debug.Log("Le roi est mort ! ");
         gameOverManager.DisplayGameOverScreen();
+        OnGamelost?.Invoke();
+
+        deathAudioSource.clip = deathSound;
+        deathAudioSource.Play();
         //SpawnParticles();
         //OnEnemyDied?.Invoke();
         //Destroy(gameObject);

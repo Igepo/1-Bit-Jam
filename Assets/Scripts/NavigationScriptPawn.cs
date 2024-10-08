@@ -13,13 +13,19 @@ public class NavigationScriptPawn : MonoBehaviour
     private bool isKnockedBack = false;
     private float knockbackDuration = 1f;
 
+    public AudioClip[] moveSounds;
+    private AudioSource audioSource;
+
+    public float pauseDuration = 1f;
+    public float moveDuration = 1f;
+
     private void Awake()
     {
         targetGameObject = GameObject.FindWithTag("Ally");
         targetTransform = targetGameObject.transform;
         agent = GetComponent<NavMeshAgent>();
         _rigidbody = GetComponent<Rigidbody>();
-
+        audioSource = GetComponent<AudioSource>();
         //var allyMaxHealth = collision.gameObject.GetComponent<King>().chessPieceData.maxHealth;
 
     }
@@ -28,6 +34,41 @@ public class NavigationScriptPawn : MonoBehaviour
     {
         agent.updateRotation = false;
         agent.updatePosition = false;
+
+        StartCoroutine(MoveTowardsTarget());
+    }
+    IEnumerator MoveTowardsTarget()
+    {
+        while (true)
+        {
+            if (!isKnockedBack && agent.isActiveAndEnabled)
+            {
+                agent.SetDestination(targetTransform.position);
+
+                agent.isStopped = false;
+
+                yield return new WaitForSeconds(moveDuration);
+
+                PlayRandomMoveSound();
+
+                if (agent.isActiveAndEnabled)
+                {
+                    agent.isStopped = true;
+                }
+            }
+
+            yield return new WaitForSeconds(pauseDuration);
+        }
+    }
+
+    void PlayRandomMoveSound()
+    {
+        if (moveSounds.Length > 0)
+        {
+            int randomIndex = Random.Range(0, moveSounds.Length);
+            audioSource.clip = moveSounds[randomIndex];
+            audioSource.Play();
+        }
     }
 
     void Update()
@@ -69,16 +110,17 @@ public class NavigationScriptPawn : MonoBehaviour
     private IEnumerator HandleKnockback()
     {
         isKnockedBack = true;
+        //agent.isStopped = true;
         agent.enabled = false;
 
         yield return new WaitForSeconds(knockbackDuration);
 
+        agent.enabled = true;
         if (agent.isOnNavMesh)
         {
             agent.Warp(transform.position);
         }
 
-        agent.enabled = true;
         isKnockedBack = false;
     }
 }

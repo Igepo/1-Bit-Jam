@@ -1,71 +1,120 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class SpawnManager : MonoBehaviour
 {
-    public GameObject unitPrefab;
+    [Header("Prefabs")]
+    public GameObject pawnPrefab;
+    public GameObject tankPawnPrefab;
+
+    [Header("Spawn Settings")]
     public BoxCollider[] spawnAreas;
-    public int initialSpawnCount = 5; // Nombre d'unités à spawn au début
     public float spawnHeight = 0f;
     public Transform parent;
-    public Collider exclusionZone; // Zone à éviter lors du spawn
-    public float spawnInterval = 2f; // Intervalle entre les spawns
-    public int maxUnits = 20; // Limite maximale d'unités
+    public Collider exclusionZone;
 
-    private float spawnTimer = 0f; // Compteur pour gérer le timing des spawns
-    private int currentUnitCount = 0; // Compteur d'unités créées
+    [Header("Wave Settings")]
+    public float spawnInterval = 2f;
+    public float waveInterval = 5f;
+    public int maxUnits = 20;
+    public int maxPawnsPerWave = 6;
+    public int minTankPawnsPerWave = 1;
+    public int maxTankPawnsPerWave = 2;
+    public float spawnAreaRadius = 5f;
 
-    void Start()
+    private int currentUnitCount = 0;
+    private Vector3 waveSpawnCenter;
+
+    private void Start()
     {
-        for (int i = 0; i < initialSpawnCount; i++)
-        {
-            SpawnUnit();
-        }
+        StartCoroutine(SpawnWaves());
     }
 
-    void Update()
+    private IEnumerator SpawnWaves()
     {
-        spawnTimer += Time.deltaTime; // Incrémenter le timer à chaque frame
-
-        if (spawnTimer >= spawnInterval)
+        while (true)
         {
             if (currentUnitCount < maxUnits)
             {
-                SpawnUnit();
-                spawnTimer = 0f; // Réinitialiser le timer
+                // Determine the number of enemies to spawn for this wave
+                int enemiesToSpawn = Random.Range(5, maxPawnsPerWave + 1);
+                int tanksToSpawn = Random.Range(minTankPawnsPerWave, maxTankPawnsPerWave + 1);
+                int pawnsToSpawn = enemiesToSpawn - tanksToSpawn;
+
+                // Generate a central position for the wave
+                waveSpawnCenter = GenerateWaveCenter();
+
+                // Spawn tanks
+                for (int i = 0; i < tanksToSpawn; i++)
+                {
+                    SpawnUnit(tankPawnPrefab);
+                    yield return new WaitForSeconds(spawnInterval);
+                }
+
+                // Spawn pawns
+                for (int i = 0; i < pawnsToSpawn; i++)
+                {
+                    SpawnUnit(pawnPrefab);
+                    yield return new WaitForSeconds(spawnInterval);
+                }
             }
+
+            // Wait until the next wave
+            yield return new WaitForSeconds(waveInterval);
         }
     }
 
-    private void SpawnUnit()
+    private void SpawnUnit(GameObject prefab)
+    {
+        // Generate a random position within the spawn area radius, around the waveSpawnCenter
+        Vector3 randomPosition = GenerateValidPositionWithinRadius(waveSpawnCenter);
+
+        if (randomPosition != Vector3.zero)
+        {
+            Instantiate(prefab, randomPosition, Quaternion.identity, parent);
+            currentUnitCount++;
+        }
+    }
+
+    private Vector3 GenerateWaveCenter()
     {
         BoxCollider selectedArea = spawnAreas[Random.Range(0, spawnAreas.Length)];
-        Vector3 randomPosition = GenerateValidPosition(selectedArea);
-
-        if (randomPosition != Vector3.zero) // Assurez-vous que nous avons trouvé une position valide
+        for (int attempt = 0; attempt < 100; attempt++)
         {
-            Instantiate(unitPrefab, randomPosition, Quaternion.identity, parent);
-            currentUnitCount++; // Incrémenter le compteur d'unités
-        }
-    }
-
-    private Vector3 GenerateValidPosition(BoxCollider selectedArea)
-    {
-        for (int attempt = 0; attempt < 100; attempt++) // Limiter les tentatives pour éviter une boucle infinie
-        {
-            Vector3 randomPosition = new Vector3(
+            Vector3 randomCenter = new Vector3(
                 Random.Range(selectedArea.bounds.min.x, selectedArea.bounds.max.x),
                 spawnHeight,
                 Random.Range(selectedArea.bounds.min.z, selectedArea.bounds.max.z)
             );
 
-            if (!IsInsideExclusionZone(randomPosition))
+            if (!IsInsideExclusionZone(randomCenter))
             {
-                return randomPosition; // Retourner une position valide
+                return randomCenter;
             }
         }
 
-        return Vector3.zero; // Retourner un vecteur nul si aucune position valide n'est trouvée
+        return Vector3.zero;
+    }
+
+    private Vector3 GenerateValidPositionWithinRadius(Vector3 center)
+    {
+        for (int attempt = 0; attempt < 100; attempt++)
+        {
+            Vector3 randomPosition = center + new Vector3(
+                Random.Range(-spawnAreaRadius, spawnAreaRadius),
+                0,
+                Random.Range(-spawnAreaRadius, spawnAreaRadius)
+            );
+
+            if (!IsInsideExclusionZone(randomPosition))
+            {
+                return randomPosition;
+            }
+        }
+
+        return Vector3.zero;
     }
 
     private bool IsInsideExclusionZone(Vector3 position)
@@ -73,8 +122,19 @@ public class SpawnManager : MonoBehaviour
         return exclusionZone != null && exclusionZone.bounds.Contains(position);
     }
 
+    public void OnUnitDestroyed()
+    {
+        currentUnitCount--;
+    }
+
+    private void OnEnable()
+    {
+        Pawn.OnPawnDie += OnUnitDestroyed;
+    }
     private void OnDisable()
     {
-        // Optionnel : vous pouvez ajouter une logique ici pour nettoyer ou arrêter le spawn si nécessaire
+        Pawn.OnPawnDie -= OnUnitDestroyed;
+
+        StopAllCoroutines();
     }
 }

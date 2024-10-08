@@ -7,8 +7,8 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public Animator animator;
-    [SerializeField] private float _baseForce = 200f;
-    [SerializeField] private float _growthRate = 0.5f;
+    [SerializeField] private float _baseForce = 300f;
+    [SerializeField] private float _growthRate = 300000f;
 
     private Rigidbody _playerRigidbody;
     private Vector3 _currentDirection = Vector3.zero;
@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     private float _timeElapsed = 0f;
     private TrailRenderer _trailRenderer;
     private PlayerInputActions playerInputActions;
+    [SerializeField] private float _maxSpeed = 375000f;
 
     public static event Action<Collision> OnPlayerCollision;
 
@@ -45,44 +46,73 @@ public class Player : MonoBehaviour
     private void Movement_performed(InputAction.CallbackContext context)
     {
         Vector2 inputVector = context.ReadValue<Vector2>();
+
+        float currentSpeed = _playerRigidbody.velocity.magnitude;
+
         if (Mathf.Abs(inputVector.x) > Mathf.Abs(inputVector.y))
         {
             _currentDirection = new Vector3(inputVector.x, 0, 0).normalized;
+
+            if (_playerRigidbody.velocity.magnitude < 0.1f)
+            {
+                _playerRigidbody.AddForce(_currentDirection * _baseForce, ForceMode.Impulse);
+            }
+            else
+            {
+                float speedOnNewAxis = _playerRigidbody.velocity.magnitude;
+                _playerRigidbody.velocity = new Vector3(speedOnNewAxis * Mathf.Sign(inputVector.x), 0, 0);
+            }
         }
         else
         {
             _currentDirection = new Vector3(0, 0, inputVector.y).normalized;
+
+            if (_playerRigidbody.velocity.magnitude < 0.1f)
+            {
+                _playerRigidbody.AddForce(_currentDirection * _baseForce, ForceMode.Impulse);
+            }
+            else
+            {
+                // Sinon, juste transférer la vitesse actuelle sur l'axe Z
+                float speedOnNewAxis = _playerRigidbody.velocity.magnitude;
+                _playerRigidbody.velocity = new Vector3(0, 0, speedOnNewAxis * Mathf.Sign(inputVector.y));
+            }
         }
 
-        _timeElapsed = 0f;
-        _currentSpeed = _baseForce;
-        _playerRigidbody.velocity = Vector3.zero;
-        _playerRigidbody.AddForce(_currentDirection * _currentSpeed, ForceMode.Impulse);
+        //_timeElapsed = 0f;
+        //_currentSpeed = _baseForce;
+        //_playerRigidbody.velocity = Vector3.zero;
+        //_playerRigidbody.AddForce(_currentDirection * _currentSpeed, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        StopPlayer();
         OnPlayerCollision?.Invoke(collision);
     }
 
     void FixedUpdate()
     {
-        float currentSpeedMagnitude = _playerRigidbody.velocity.magnitude;
-
         if (_currentDirection != Vector3.zero && _playerRigidbody.velocity.magnitude > 0.1f)
         {
             animator.Play("Angry");
 
             _timeElapsed += Time.fixedDeltaTime;
-            //_currentSpeed = _baseForce * Mathf.Exp(_growthRate * _timeElapsed);
             _currentSpeed = _baseForce + (_growthRate * _timeElapsed);
-            _currentSpeed = Mathf.Clamp(_currentSpeed, 0f, float.MaxValue);
+
+            _currentSpeed = Mathf.Clamp(_currentSpeed, 0f, _maxSpeed);
+
             _playerRigidbody.AddForce(_currentDirection * _currentSpeed * Time.fixedDeltaTime, ForceMode.Force);
         }
         else
         {
             animator.Play("Happy");
             _timeElapsed = 0f;
+        }
+
+        if (_playerRigidbody.velocity.magnitude > _maxSpeed)
+        {
+            _playerRigidbody.velocity = _playerRigidbody.velocity.normalized * _maxSpeed;
         }
     }
 

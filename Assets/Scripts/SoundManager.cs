@@ -9,9 +9,32 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
+        musicAudioSource.volume = 0.2f;
         musicAudioSource.clip = backgroundMusic;
         musicAudioSource.loop = true;
         musicAudioSource.Play();
+    }
+
+    private void OnEnable()
+    {
+        NavigationScriptKing.OnVictory += VictoryVolume;
+        King.OnGamelost += DefeatVolume;
+    }
+
+    private void OnDisable()
+    {
+        NavigationScriptKing.OnVictory -= VictoryVolume;
+        King.OnGamelost -= DefeatVolume;
+    }
+
+    void VictoryVolume()
+    {
+        musicAudioSource.volume -= 0.15f;
+    }
+    void DefeatVolume()
+    {
+        musicAudioSource.volume -= 0.15f;
+        musicAudioSource.pitch -= 0.1f;
     }
 
     public void PlayCollisionSound(float impactSpeed, int collisionCount)
@@ -19,7 +42,7 @@ public class SoundManager : MonoBehaviour
         float normalizedImpactSpeed = Mathf.Clamp(impactSpeed, 0f, 5000f) / 5000f;
 
         float baseVolume = Mathf.SmoothStep(0f, 0.2f, normalizedImpactSpeed);
-        float volume = Mathf.Clamp(baseVolume / collisionCount, 0.1f, 1f); // Volume minimum à 0.1 pour éviter le silence
+        float volume = Mathf.Clamp(baseVolume / collisionCount, 0.1f, 1f);
 
         effectAudioSource.volume = volume;
 
