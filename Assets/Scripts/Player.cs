@@ -20,6 +20,11 @@ public class Player : MonoBehaviour
 
     public static event Action<Collision> OnPlayerCollision;
 
+    public float CurrentSpeed
+    {
+        get { return _playerRigidbody.velocity.magnitude; }
+    }
+
     void Awake()
     {
         _playerRigidbody = GetComponent<Rigidbody>();
@@ -131,6 +136,6 @@ public class Player : MonoBehaviour
         var multiplier = 1.25f;
         transform.localScale *= multiplier;
         _trailRenderer.startWidth *= multiplier;
-        CameraManager.Instance.StartDezoom(multiplier, 0.25f);
+        //CameraManager.Instance.StartDezoom(multiplier, 0.25f);
     }
 }

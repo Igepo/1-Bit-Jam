@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
         Player.OnPlayerCollision += OnPlayerCollision;
         ChessPiece.OnCollisionWithPlayer += OnCollisionWithPlayer;
         NavigationScriptKing.OnVictory += ShowVictoryScreen;
+        TutorialFinished.OnTutorialFinished += ShowVictoryScreen;
         Pawn.OnPawnDie += OnPawnDie;
     }
 
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
         Player.OnPlayerCollision -= OnPlayerCollision;
         ChessPiece.OnCollisionWithPlayer -= OnCollisionWithPlayer;
         NavigationScriptKing.OnVictory -= ShowVictoryScreen;
+        TutorialFinished.OnTutorialFinished -= ShowVictoryScreen;
         Pawn.OnPawnDie -= OnPawnDie;
     }
 
@@ -96,7 +98,8 @@ public class GameManager : MonoBehaviour
         canvasToDisable.enabled = false;
         objectToDisable.SetActive(false);
 
-        pawnKilledText.text = $"You captured {pawnDeadNumber} pawns!";
+        if (pawnKilledText != null)
+            pawnKilledText.text = $"You captured {pawnDeadNumber} pawns!";
         //Time.timeScale = 0f;
     }
 

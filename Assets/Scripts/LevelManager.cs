@@ -16,6 +16,7 @@ public class LevelManager : MonoBehaviour
     private Vector3 initialPosition;
 
     public GameObject fxToDisable;
+    public GameObject ArrowToDisable;
     public GameObject levelSelectionPanel;
     private void Awake()
     {
@@ -39,6 +40,8 @@ public class LevelManager : MonoBehaviour
         int percentageCompletedInt = Mathf.RoundToInt(navigationScriptKing.GetPercentageCompleted());
 
         endMessageText.text = $"The king moved {percentageCompletedInt}% of the way";
+        if (ArrowToDisable != null)
+            ArrowToDisable.SetActive(false);
 
         gameOverPanel.SetActive(true);
         Time.timeScale = 0f;
@@ -49,29 +52,32 @@ public class LevelManager : MonoBehaviour
     public void LoadNextLevel()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        if (currentSceneIndex + 1 < SceneManager.sceneCountInBuildSettings)
-        {
-            string nextSceneName = SceneManager.GetSceneByBuildIndex(currentSceneIndex + 1).name;
-            StartCoroutine(TransitionAndLoadScene(nextSceneName));
-        }
+        SceneManager.LoadScene(currentSceneIndex + 1);
+        //if (currentSceneIndex + 1 < SceneManager.sceneCountInBuildSettings)
+        //{
+        //    string scenePath = SceneUtility.GetScenePathByBuildIndex(currentSceneIndex + 1);
+        //    string nextSceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+        //    StartCoroutine(TransitionAndLoadScene(nextSceneName));
+        //}
 
         //SceneManager.LoadScene(currentSceneIndex + 1);
     }
 
     public void RestartGame()
     {
-        Time.timeScale = 1f;
+        //Time.timeScale = 1f;
+        //int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        //string nextSceneName = SceneManager.GetSceneByBuildIndex(currentSceneIndex).name;
+        //StartCoroutine(TransitionAndLoadScene(nextSceneName));
+        
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        string nextSceneName = SceneManager.GetSceneByBuildIndex(currentSceneIndex).name;
-        StartCoroutine(TransitionAndLoadScene(nextSceneName));
-
-        //SceneManager.LoadScene(currentSceneIndex);
+        SceneManager.LoadScene(currentSceneIndex);
     }
 
     public void LoadMainMenu()
     {
         Time.timeScale = 1f;
-        StartCoroutine(TransitionAndLoadScene("MainMenuScene"));
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     public void MainMenuPlayButton() 
@@ -79,7 +85,7 @@ public class LevelManager : MonoBehaviour
         //string firstScene = SceneManager.GetSceneByBuildIndex(1).name;
         //Debug.Log("firstScene " + firstScene);
         //StartCoroutine(TransitionAndLoadScene(firstScene));
-        StartCoroutine(TransitionAndLoadScene("Level_01"));
+        StartCoroutine(TransitionAndLoadScene("Tuto"));
     }
 
     #region LevelSelection
