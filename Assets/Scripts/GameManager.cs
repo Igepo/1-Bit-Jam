@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour
         Vector3 impactForce = collision.relativeVelocity * player.GetComponent<Rigidbody>().mass;
         float impactForceMagnitude = impactForce.magnitude;
         var impactForceMagnitudeClamp = Mathf.Clamp(impactForceMagnitude, 0f, 5000f);
+        Debug.Log("OnPlayerCollision");
 
         collisionCount++;
         soundManager.PlayCollisionSound(impactForceMagnitudeClamp, collisionCount);
@@ -79,7 +80,7 @@ public class GameManager : MonoBehaviour
     {
         if (tag == "Wall") return;
         var impactForceMagnitudeClamp = Mathf.Clamp(impactForceMagnitude, 0f, 5000f);
-
+        Debug.Log("OnCollisionWithPlayer");
         collisionCount++;
         soundManager.PlayCollisionSound(impactForceMagnitudeClamp, collisionCount);
         CameraManager.Instance.TriggerShake(impactForceMagnitudeClamp);

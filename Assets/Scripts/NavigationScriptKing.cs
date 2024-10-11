@@ -129,6 +129,7 @@ public class NavigationScriptKing : MonoBehaviour
     void IterateWaypointIndex()
     {
         waypointIndex++;
+        Debug.Log("waypointindex : " + waypointIndex);
         if (waypointIndex >= waypoints.Length)
         {
             hasReachedLastWaypoint = true;

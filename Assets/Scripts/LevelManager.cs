@@ -18,6 +18,9 @@ public class LevelManager : MonoBehaviour
     public GameObject fxToDisable;
     public GameObject ArrowToDisable;
     public GameObject levelSelectionPanel;
+
+    public GameObject tutoPanel;
+
     private void Awake()
     {
         navigationScriptKing = FindObjectOfType<NavigationScriptKing>();
@@ -34,6 +37,9 @@ public class LevelManager : MonoBehaviour
         
         if (levelSelectionPanel != null)
             levelSelectionPanel.SetActive(false);
+
+        if (tutoPanel != null)
+            tutoPanel.SetActive(false);
     }
     public void DisplayGameOverScreen()
     {
@@ -65,11 +71,12 @@ public class LevelManager : MonoBehaviour
 
     public void RestartGame()
     {
-        //Time.timeScale = 1f;
+        //
         //int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         //string nextSceneName = SceneManager.GetSceneByBuildIndex(currentSceneIndex).name;
         //StartCoroutine(TransitionAndLoadScene(nextSceneName));
-        
+
+        Time.timeScale = 1f;
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex);
     }
@@ -85,7 +92,16 @@ public class LevelManager : MonoBehaviour
         //string firstScene = SceneManager.GetSceneByBuildIndex(1).name;
         //Debug.Log("firstScene " + firstScene);
         //StartCoroutine(TransitionAndLoadScene(firstScene));
-        StartCoroutine(TransitionAndLoadScene("Tuto"));
+        StartCoroutine(TransitionAndLoadScene("Level_01"));
+    }
+
+    public void MainMenuHowToPlayButton()
+    {
+        tutoPanel.SetActive(true);
+    }
+    public void MainMenuHowToPlayBackButton()
+    {
+        tutoPanel.SetActive(false);
     }
 
     #region LevelSelection
