@@ -92,7 +92,8 @@ public class LevelManager : MonoBehaviour
         //string firstScene = SceneManager.GetSceneByBuildIndex(1).name;
         //Debug.Log("firstScene " + firstScene);
         //StartCoroutine(TransitionAndLoadScene(firstScene));
-        StartCoroutine(TransitionAndLoadScene("Level_01"));
+        //StartCoroutine(TransitionAndLoadScene("Level_01"));
+        SceneManager.LoadScene("Level_01");
     }
 
     public void MainMenuHowToPlayButton()
@@ -118,15 +119,20 @@ public class LevelManager : MonoBehaviour
     public void MainMenuLevelSelectionFirstButton()
     {
 
-        StartCoroutine(TransitionAndLoadScene("Level_01"));
+        //StartCoroutine(TransitionAndLoadScene("Level_01"));
+        SceneManager.LoadScene("Level_01");
     }
     public void MainMenuLevelSelectionSecondButton()
     {
-        StartCoroutine(TransitionAndLoadScene("Level_02"));
+        //StartCoroutine(TransitionAndLoadScene("Level_02"));
+        SceneManager.LoadScene("Level_02");
+
     }
     public void MainMenuLevelSelectionThirdButton()
     {
-        StartCoroutine(TransitionAndLoadScene("Level_03"));
+        //StartCoroutine(TransitionAndLoadScene("Level_03"));
+        SceneManager.LoadScene("Level_03");
+
     }
 
     #endregion
